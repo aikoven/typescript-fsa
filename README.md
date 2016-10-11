@@ -13,6 +13,12 @@ interface Action<P> {
 }
 ``` 
 
+## Installation
+
+```
+npm install --save redux-typescript-actions
+```
+
 ## Usage
 
 ### Basic
