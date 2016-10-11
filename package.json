@@ -14,9 +14,11 @@
     "index.d.ts"
   ],
   "scripts": {
+    "clean": "rimraf es6 lib",
     "build:es6": "tsc",
     "build:commonjs": "babel es6 --out-dir lib",
-    "build": "npm run build:es6 && npm run build:commonjs"
+    "build": "npm run build:es6 && npm run build:commonjs",
+    "prepublish": "npm run clean && npm run build"
   },
   "author": "Daniel Lytkin <dan.lytkin@gmail.com>",
   "license": "MIT",
@@ -26,6 +28,7 @@
   "devDependencies": {
     "babel-core": "^6.17.0",
     "babel-preset-es2015": "^6.16.0",
+    "rimraf": "^2.5.4",
     "typescript": "^2.0.3"
   }
 }
