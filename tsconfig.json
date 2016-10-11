@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "moduleResolution": "node",
+    "declaration": true,
+    "declarationDir": ".",
+    "outDir": "es6",
+    "noImplicitReturns": true
+  },
+  "files": [
+    "src/index.ts"
+  ]
+}
