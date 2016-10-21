@@ -13,10 +13,7 @@
     "lib",
     "index.d.ts"
   ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/aikoven/redux-typescript-actions.git"
-  },
+  "repository": "aikoven/redux-typescript-actions",
   "scripts": {
     "clean": "rimraf es6 lib",
     "build:es6": "tsc",
