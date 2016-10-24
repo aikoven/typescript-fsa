@@ -5,26 +5,29 @@ export interface Action<P> extends ReduxAction {
     error?: boolean;
     meta?: Object;
 }
+export interface Success<P, S> {
+    params: P;
+    result: S;
+}
+export interface Failure<P, E> {
+    params: P;
+    error: E;
+}
 export declare function isType<P>(action: ReduxAction, actionCreator: ActionCreator<P>): action is Action<P>;
 export interface ActionCreator<P> {
     type: string;
     (payload: P, meta?: Object): Action<P>;
 }
-export interface AsyncActionCreators<P, R> {
+export interface AsyncActionCreators<P, S, E> {
     type: string;
     started: ActionCreator<P>;
-    done: ActionCreator<{
-        params: P;
-        result: R;
-    }>;
-    failed: ActionCreator<{
-        params: P;
-        error: any;
-    }>;
+    done: ActionCreator<Success<P, S>>;
+    failed: ActionCreator<Failure<P, E>>;
 }
 export interface ActionCreatorFactory {
     <P>(type: string, commonMeta?: Object, error?: boolean): ActionCreator<P>;
     (type: string, commonMeta?: Object, error?: boolean): ActionCreator<undefined>;
-    async<P, S>(type: string, commonMeta?: Object): AsyncActionCreators<P, S>;
+    async<P, S, E>(type: string, commonMeta?: Object): AsyncActionCreators<P, S, E>;
+    async<P, S>(type: string, commonMeta?: Object, error?: boolean): AsyncActionCreators<P, S, any>;
 }
 export default function actionCreatorFactory(prefix?: string): ActionCreatorFactory;

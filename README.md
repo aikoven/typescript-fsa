@@ -51,7 +51,10 @@ const actionCreator = actionCreatorFactory();
 
 // specify parameters and result shapes as generic type arguments
 const doSomething = 
-  actionCreator.async<{foo: string}, {bar: number}>('DO_SOMETHING');
+  actionCreator.async<{foo: string},   // parameter type
+                      {bar: number},   // success type
+                      {code: number}   // error type
+                     >('DO_SOMETHING');
 
 console.log(doSomething.started({foo: 'lol'}));
 // {type: 'DO_SOMETHING_STARTED', payload: {foo: 'lol'}}
