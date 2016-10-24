@@ -3,7 +3,7 @@ import {Action as ReduxAction} from "redux";
 
 export interface Action<P> extends ReduxAction {
   type: string;
-  payload?: P;
+  payload: P;
   error?: boolean;
   meta?: Object;
 }
@@ -17,7 +17,7 @@ export function isType<P>(
 
 export interface ActionCreator<P> {
   type: string;
-  (payload?: P, meta?: Object): Action<P>;
+  (payload: P, meta?: Object): Action<P>;
 }
 
 export interface AsyncActionCreators<P, R> {
@@ -35,6 +35,7 @@ export interface AsyncActionCreators<P, R> {
 
 export interface ActionCreatorFactory {
   <P>(type: string, commonMeta?: Object, error?: boolean): ActionCreator<P>;
+  (type: string, commonMeta?: Object, error?: boolean): ActionCreator<undefined>;
 
   async<P, S>(type: string, commonMeta?: Object): AsyncActionCreators<P, S>;
 }
@@ -54,7 +55,7 @@ ActionCreatorFactory {
     const fullType = prefix ? `${prefix}/${type}` : type;
 
     return Object.assign(
-      (payload?: P, meta?: Object) => {
+      (payload: P, meta?: Object) => {
         const action: Action<P> = {
           type: fullType,
           payload,

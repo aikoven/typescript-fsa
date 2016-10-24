@@ -7,7 +7,7 @@ Created actions are FSA-compliant:
 ```ts
 interface Action<P> {
   type: string;
-  payload?: P;
+  payload: P;
   error?: boolean;
   meta?: Object;
 }
