@@ -30,6 +30,10 @@ export interface ActionCreator<P> {
   (payload: P, meta?: Object): Action<P>;
 }
 
+export interface EmptyActionCreator extends ActionCreator<undefined> {
+  (payload?: undefined, meta?: Object): Action<undefined>;
+}
+
 export interface AsyncActionCreators<P, S, E> {
   type: string;
   started: ActionCreator<P>;
@@ -38,11 +42,11 @@ export interface AsyncActionCreators<P, S, E> {
 }
 
 export interface ActionCreatorFactory {
+  (type: string, commonMeta?: Object, error?: boolean): EmptyActionCreator;
   <P>(type: string, commonMeta?: Object, error?: boolean): ActionCreator<P>;
-  (type: string, commonMeta?: Object, error?: boolean): ActionCreator<undefined>;
 
+  async<P, S>(type: string, commonMeta?: Object): AsyncActionCreators<P, S, any>;
   async<P, S, E>(type: string, commonMeta?: Object): AsyncActionCreators<P, S, E>;
-  async<P, S>(type: string, commonMeta?: Object, error?: boolean): AsyncActionCreators<P, S, any>;
 }
 
 
@@ -89,4 +93,3 @@ ActionCreatorFactory {
 
   return Object.assign(actionCreator, {async: asyncActionCreators});
 }
-
