@@ -1,4 +1,4 @@
-# Redux TypeScript Actions
+# Redux TypeScript Actions [![Build Status](https://travis-ci.org/aikoven/redux-typescript-actions.svg?branch=master)](https://travis-ci.org/aikoven/redux-typescript-actions)
 
 A simple Action Creator library for TypeScript. Its goal is to provide simple
 yet type-safe experience with Redux actions.
