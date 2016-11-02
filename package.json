@@ -14,14 +14,16 @@
   "repository": "aikoven/redux-typescript-actions",
   "scripts": {
     "clean": "rimraf es6 lib",
+    "lint": "tslint -c tslint.json src/**/*.ts",
     "build": "tsc",
     "prepublish": "npm run clean && npm run build"
   },
   "author": "Daniel Lytkin <dan.lytkin@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "redux": "^3.6.0",
     "rimraf": "^2.5.4",
-    "typescript": "^2.0.3",
-    "redux": "^3.6.0"
+    "tslint": "^3.15.1",
+    "typescript": "^2.0.3"
   }
 }

@@ -45,8 +45,10 @@ export interface ActionCreatorFactory {
   (type: string, commonMeta?: Object, error?: boolean): EmptyActionCreator;
   <P>(type: string, commonMeta?: Object, error?: boolean): ActionCreator<P>;
 
-  async<P, S>(type: string, commonMeta?: Object): AsyncActionCreators<P, S, any>;
-  async<P, S, E>(type: string, commonMeta?: Object): AsyncActionCreators<P, S, E>;
+  async<P, S>(type: string,
+              commonMeta?: Object): AsyncActionCreators<P, S, any>;
+  async<P, S, E>(type: string,
+                 commonMeta?: Object): AsyncActionCreators<P, S, E>;
 }
 
 
