@@ -5,6 +5,7 @@
 # NPM
 node_modules
 npm-*.log
+yarn.lock
 
 # OS X
 .DS_Store
