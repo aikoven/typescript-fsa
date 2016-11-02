@@ -110,13 +110,13 @@ export const somethingHappened =
 
 
 // reducer.ts
-import {Action} from 'redux';
+import {Action as ReduxAction} from 'redux';
 import {isType, Action} from 'redux-typescript-actions';
 import {somethingHappened} from './actions';
 
 type State = {bar: string};
 
-const reducer = (state: State, action: Action): State => {
+const reducer = (state: State, action: ReduxAction): State => {
   if (isType(action, somethingHappened)) {
     // action.payload is inferred as {foo: string};
     
