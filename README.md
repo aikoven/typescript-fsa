@@ -1,4 +1,4 @@
-# Redux TypeScript Actions [![Build Status](https://travis-ci.org/aikoven/redux-typescript-actions.svg?branch=master)](https://travis-ci.org/aikoven/redux-typescript-actions)
+# Redux TypeScript Actions [![npm version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url]
 
 A simple Action Creator library for TypeScript. Its goal is to provide simple
 yet type-safe experience with Redux actions.
@@ -151,3 +151,8 @@ if (isType(action, somethingHappened)) {
   // action.payload has type {foo: string};
 }
 ```
+
+[npm-image]: https://badge.fury.io/js/redux-typescript-actions.svg
+[npm-url]: https://badge.fury.io/js/redux-typescript-actions
+[travis-image]: https://travis-ci.org/aikoven/redux-typescript-actions.svg?branch=master
+[travis-url]: https://travis-ci.org/aikoven/redux-typescript-actions
