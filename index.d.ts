@@ -29,8 +29,8 @@ export interface AsyncActionCreators<P, S, E> {
 }
 export interface ActionCreatorFactory {
     (type: string, commonMeta?: Object, error?: boolean): EmptyActionCreator;
-    <P>(type: string, commonMeta?: Object, error?: boolean): ActionCreator<P>;
+    <P>(type: string, commonMeta?: Object, isError?: ((payload: P) => boolean) | boolean): ActionCreator<P>;
     async<P, S>(type: string, commonMeta?: Object): AsyncActionCreators<P, S, any>;
     async<P, S, E>(type: string, commonMeta?: Object): AsyncActionCreators<P, S, E>;
 }
-export default function actionCreatorFactory(prefix?: string): ActionCreatorFactory;
+export default function actionCreatorFactory(prefix?: string, defaultIsError?: (payload: any) => boolean): ActionCreatorFactory;
