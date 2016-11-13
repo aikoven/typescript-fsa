@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "lib": ["es5", "es2015.core"],
+    "moduleResolution": "node",
+    "outDir": "tests-build",
+    "noImplicitReturns": true,
+    "module": "commonjs"
+  },
+  "files": [
+    "tests/index.ts"
+  ]
+}
