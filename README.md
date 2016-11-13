@@ -131,11 +131,13 @@ const reducer = (state: State, action: ReduxAction): State => {
 
 ## API
 
-### `actionCreatorFactory(prefix?: string): ActionCreatorFactory`
+### `actionCreatorFactory(prefix?: string, defaultIsError?: Predicate): ActionCreatorFactory`
 
 Creates Action Creator factory with optional prefix for action types.
 
 * `prefix?: string`: Prefix to be prepended to action types.
+* `defaultIsError?: Predicate`: Function that detects whether action is error
+ given the payload. Default is `payload => payload instanceof Error`.
 
 ### `isType(action: Action, actionCreator: ActionCreator): boolean`
 
