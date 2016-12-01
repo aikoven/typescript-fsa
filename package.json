@@ -3,7 +3,10 @@
   "version": "1.2.0",
   "description": "Type-safe action creator utilities",
   "keywords": [
-    "redux"
+    "redux",
+    "typescript",
+    "action",
+    "action creator"
   ],
   "main": "lib/index.js",
   "typings": "./index.d.ts",
@@ -13,7 +16,7 @@
   ],
   "repository": "aikoven/redux-typescript-actions",
   "scripts": {
-    "clean": "rimraf es6 lib",
+    "clean": "rimraf lib",
     "lint": "tslint -c tslint.json src/**/*.ts tests/**/*.ts",
     "test": "tsc -p tsconfig.tests.json && tape tests-build/tests/*.js",
     "build": "tsc",
