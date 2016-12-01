@@ -20,7 +20,7 @@ export interface Failure<P, E> {
 
 export function isType<P>(
   action: ReduxAction,
-  actionCreator: ActionCreator<P>
+  actionCreator: ActionCreator<P>,
 ): action is Action<P> {
   return action.type === actionCreator.type;
 }
@@ -98,7 +98,7 @@ export default function actionCreatorFactory(
 
         return action;
       },
-      {type: fullType}
+      {type: fullType},
     );
   }
 
