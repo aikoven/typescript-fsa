@@ -14,14 +14,11 @@
       80
     ],
     "no-duplicate-variable": true,
-    "no-duplicate-key": true,
     "no-empty": false,
     "no-eval": true,
     "no-internal-module": true,
     "no-trailing-whitespace": false,
-    "no-unreachable": true,
     "no-unused-expression": true,
-    "no-unused-variable": true,
     "no-use-before-declare": true,
     "no-var-keyword": true,
     "one-line": [
