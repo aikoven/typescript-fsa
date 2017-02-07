@@ -1,15 +1,18 @@
 {
   "compilerOptions": {
-    "target": "ES5",
-    "lib": ["es5", "es2015.core"],
+    "target": "es6",
+    "module": "es2015",
+    "lib": ["es2015"],
     "moduleResolution": "node",
     "declaration": true,
-    "declarationDir": ".",
-    "outDir": "lib",
+    "declarationDir": "es",
+    "outDir": "es",
     "noImplicitReturns": true,
-    "module": "commonjs"
+    "noImplicitAny": true,
+    "strictNullChecks": true
   },
   "files": [
-    "src/index.ts"
+    "src/index.ts",
+    "src/sagas.ts"
   ]
 }

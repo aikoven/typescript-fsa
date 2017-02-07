@@ -64,7 +64,7 @@ export default function actionCreatorFactory(
   prefix?: string,
   defaultIsError: (payload: any) => boolean = p => p instanceof Error,
 ): ActionCreatorFactory {
-  const actionTypes = {};
+  const actionTypes: {[type: string]: boolean} = {};
 
   const base = prefix ? `${prefix}/` : "";
 
