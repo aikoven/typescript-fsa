@@ -1,7 +1,7 @@
-# Redux TypeScript Actions [![npm version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url]
+# TypeScript FSA [![npm version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url]
 
 A simple Action Creator library for TypeScript. Its goal is to provide simple
-yet type-safe experience with Redux actions.
+yet type-safe experience with Flux actions.
 Created actions are FSA-compliant:
  
 ```ts
@@ -16,7 +16,7 @@ interface Action<P> {
 ## Installation
 
 ```
-npm install --save redux-typescript-actions
+npm install --save typescript-fsa
 ```
 
 ## Usage
@@ -24,7 +24,7 @@ npm install --save redux-typescript-actions
 ### Basic
 
 ```ts
-import actionCreatorFactory from 'redux-typescript-actions';
+import actionCreatorFactory from 'typescript-fsa';
 
 const actionCreator = actionCreatorFactory();
 
@@ -45,7 +45,7 @@ Async Action Creators are objects with properties `started`, `done` and
 `failed` whose values are action creators. 
 
 ```ts
-import actionCreatorFactory from 'redux-typescript-actions';
+import actionCreatorFactory from 'typescript-fsa';
 
 const actionCreator = actionCreatorFactory();
 
@@ -86,7 +86,7 @@ convenient to keep actions near the component that dispatches them.
 
 ```ts
 // MyComponent.actions.ts
-import actionCreatorFactory from 'redux-typescript-actions';
+import actionCreatorFactory from 'typescript-fsa';
 
 const actionCreator = actionCreatorFactory('MyComponent');
 
@@ -97,11 +97,11 @@ console.log(action);
 // {type: 'MyComponent/SOMETHING_HAPPENED', payload: {foo: 'bar'}}  
 ```
 
-### Reducers
+### Redux
 
 ```ts
 // actions.ts
-import actionCreatorFactory from 'redux-typescript-actions';
+import actionCreatorFactory from 'typescript-fsa';
 
 const actionCreator = actionCreatorFactory();
 
@@ -110,13 +110,13 @@ export const somethingHappened =
 
 
 // reducer.ts
-import {Action as ReduxAction} from 'redux';
-import {isType, Action} from 'redux-typescript-actions';
+import {Action} from 'redux';
+import {isType} from 'typescript-fsa';
 import {somethingHappened} from './actions';
 
 type State = {bar: string};
 
-const reducer = (state: State, action: ReduxAction): State => {
+const reducer = (state: State, action: Action): State => {
   if (isType(action, somethingHappened)) {
     // action.payload is inferred as {foo: string};
     
@@ -154,7 +154,7 @@ if (isType(action, somethingHappened)) {
 }
 ```
 
-[npm-image]: https://badge.fury.io/js/redux-typescript-actions.svg
-[npm-url]: https://badge.fury.io/js/redux-typescript-actions
-[travis-image]: https://travis-ci.org/aikoven/redux-typescript-actions.svg?branch=master
-[travis-url]: https://travis-ci.org/aikoven/redux-typescript-actions
+[npm-image]: https://badge.fury.io/js/typescript-fsa.svg
+[npm-url]: https://badge.fury.io/js/typescript-fsa
+[travis-image]: https://travis-ci.org/aikoven/typescript-fsa.svg?branch=master
+[travis-url]: https://travis-ci.org/aikoven/typescript-fsa

@@ -1,11 +1,12 @@
-import {Action as ReduxAction} from "redux";
+export interface AnyAction {
+  type: any;
+}
 
-
-export interface Action<P> extends ReduxAction {
+export interface Action<P> extends AnyAction {
   type: string;
   payload: P;
   error?: boolean;
-  meta?: Object;
+  meta?: Object | null;
 }
 
 export interface Success<P, S> {
@@ -19,7 +20,7 @@ export interface Failure<P, E> {
 }
 
 export function isType<P>(
-  action: ReduxAction,
+  action: AnyAction,
   actionCreator: ActionCreator<P>,
 ): action is Action<P> {
   return action.type === actionCreator.type;
@@ -27,11 +28,11 @@ export function isType<P>(
 
 export interface ActionCreator<P> {
   type: string;
-  (payload: P, meta?: Object): Action<P>;
+  (payload: P, meta?: Object | null): Action<P>;
 }
 
 export interface EmptyActionCreator extends ActionCreator<undefined> {
-  (payload?: undefined, meta?: Object): Action<undefined>;
+  (payload?: undefined, meta?: Object | null): Action<undefined>;
 }
 
 export interface AsyncActionCreators<P, S, E> {
@@ -42,15 +43,17 @@ export interface AsyncActionCreators<P, S, E> {
 }
 
 export interface ActionCreatorFactory {
-  (type: string, commonMeta?: Object, error?: boolean): EmptyActionCreator;
-  <P>(type: string, commonMeta?: Object, isError?: boolean): ActionCreator<P>;
-  <P>(type: string, commonMeta?: Object,
+  (type: string, commonMeta?: Object | null,
+   error?: boolean): EmptyActionCreator;
+  <P>(type: string, commonMeta?: Object | null,
+      isError?: boolean): ActionCreator<P>;
+  <P>(type: string, commonMeta?: Object | null,
       isError?: (payload: P) => boolean): ActionCreator<P>;
 
   async<P, S>(type: string,
-              commonMeta?: Object): AsyncActionCreators<P, S, any>;
+              commonMeta?: Object | null): AsyncActionCreators<P, S, any>;
   async<P, S, E>(type: string,
-                 commonMeta?: Object): AsyncActionCreators<P, S, E>;
+                 commonMeta?: Object | null): AsyncActionCreators<P, S, E>;
 }
 
 declare const process: {
@@ -61,7 +64,7 @@ declare const process: {
 
 
 export default function actionCreatorFactory(
-  prefix?: string,
+  prefix?: string | null,
   defaultIsError: (payload: any) => boolean = p => p instanceof Error,
 ): ActionCreatorFactory {
   const actionTypes: {[type: string]: boolean} = {};
@@ -69,7 +72,7 @@ export default function actionCreatorFactory(
   const base = prefix ? `${prefix}/` : "";
 
   function actionCreator <P>(
-    type: string, commonMeta?: Object,
+    type: string, commonMeta?: Object | null,
     isError: ((payload: P) => boolean) | boolean = defaultIsError,
   ): ActionCreator<P> {
     const fullType = base + type;
@@ -82,7 +85,7 @@ export default function actionCreatorFactory(
     }
 
     return Object.assign(
-      (payload: P, meta?: Object) => {
+      (payload: P, meta?: Object | null) => {
         const action: Action<P> = {
           type: fullType,
           payload,
@@ -103,7 +106,7 @@ export default function actionCreatorFactory(
   }
 
   function asyncActionCreators<P, S, E>(
-    type: string, commonMeta?: Object,
+    type: string, commonMeta?: Object | null,
   ): AsyncActionCreators<P, S, E> {
     return {
       type: base + type,
