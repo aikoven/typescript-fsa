@@ -129,6 +129,10 @@ const reducer = (state: State, action: Action): State => {
 };
 ```
 
+## Companion packages
+
+* [typescript-fsa-redux-saga](https://github.com/aikoven/typescript-fsa-redux-saga)
+
 ## API
 
 ### `actionCreatorFactory(prefix?: string, defaultIsError?: Predicate): ActionCreatorFactory`
