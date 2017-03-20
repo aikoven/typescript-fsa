@@ -42,6 +42,21 @@ export interface AsyncActionCreators<P, S, E> {
   failed: ActionCreator<Failure<P, E>>;
 }
 
+export interface EmptySuccess<S> {
+  result: S;
+}
+
+export interface EmptyFailure<E> {
+  error: E;
+}
+
+export interface EmptyAsyncActionCreators<S, E> {
+  type: string;
+  started: EmptyActionCreator;
+  done: ActionCreator<EmptySuccess<S>>;
+  failed: ActionCreator<EmptyFailure<E>>;
+}
+
 export interface ActionCreatorFactory {
   (type: string, commonMeta?: Object | null,
    error?: boolean): EmptyActionCreator;
@@ -52,6 +67,9 @@ export interface ActionCreatorFactory {
 
   async<P, S>(type: string,
               commonMeta?: Object | null): AsyncActionCreators<P, S, any>;
+  async<undefined, S, E>(type: string,
+                         commonMeta?: Object | null,
+                         ): EmptyAsyncActionCreators<S, E>;
   async<P, S, E>(type: string,
                  commonMeta?: Object | null): AsyncActionCreators<P, S, E>;
 }
