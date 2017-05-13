@@ -134,6 +134,10 @@ const reducer = (state: State, action: Action): State => {
 * [typescript-fsa-redux-saga](https://github.com/aikoven/typescript-fsa-redux-saga)
 * [typescript-fsa-reducers](https://github.com/dphilipson/typescript-fsa-reducers)
 
+## Resources
+
+* [Type-safe Flux Standard Actions (FSA) in React Using TypeScript FSA](https://www.triplet.fi/blog/type-safe-flux-standard-actions-fsa-in-react-using-typescript-fsa/)
+
 ## API
 
 ### `actionCreatorFactory(prefix?: string, defaultIsError?: Predicate): ActionCreatorFactory`
