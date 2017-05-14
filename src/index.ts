@@ -65,13 +65,15 @@ export interface ActionCreatorFactory {
   <P>(type: string, commonMeta?: Object | null,
       isError?: (payload: P) => boolean): ActionCreator<P>;
 
-  async<P, S>(type: string,
-              commonMeta?: Object | null): AsyncActionCreators<P, S, any>;
-  async<undefined, S, E>(type: string,
-                         commonMeta?: Object | null,
-                         ): EmptyAsyncActionCreators<S, E>;
-  async<P, S, E>(type: string,
-                 commonMeta?: Object | null): AsyncActionCreators<P, S, E>;
+  async<P, S>(
+    type: string, commonMeta?: Object | null,
+  ): AsyncActionCreators<P, S, any>;
+  async<undefined, S, E>(
+    type: string, commonMeta?: Object | null,
+  ): EmptyAsyncActionCreators<S, E>;
+  async<P, S, E>(
+    type: string, commonMeta?: Object | null,
+  ): AsyncActionCreators<P, S, E>;
 }
 
 declare const process: {

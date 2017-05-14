@@ -1,4 +1,6 @@
 import test = require('tape');
+import {join} from "path";
+import {checkDirectory} from "typings-tester";
 import actionCreatorFactory, {isType} from "../src/index";
 
 test('isType', assert => {
@@ -129,6 +131,14 @@ test('async', assert => {
 
   const failed = asyncActions.failed({params: {foo: 'foo'}, error: 'error'});
   assert.true(failed.error);
+
+  assert.end();
+});
+
+test('typings', assert => {
+  assert.doesNotThrow(() => {
+    checkDirectory(join(__dirname, 'typings'));
+  });
 
   assert.end();
 });

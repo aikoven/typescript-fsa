@@ -30,6 +30,7 @@
     "tape": "^4.6.2",
     "ts-node": "^3.0.0",
     "tslint": "^5.0.0",
-    "typescript": "^2.1.5"
+    "typescript": "^2.1.5",
+    "typings-tester": "^0.2.2"
   }
 }
