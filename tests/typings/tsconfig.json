@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
+    "lib": ["es6"],
     "strictNullChecks": true,
     "noImplicitAny": true,
     "baseUrl": ".",
     "paths": {
-      "typescript-fsa": ["../.."]
+      "typescript-fsa": ["../../src/index"]
     }
   }
 }
