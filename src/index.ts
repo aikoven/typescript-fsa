@@ -28,7 +28,7 @@ export function isType<P>(
 
 export interface ActionCreator<P> {
   type: string;
-  (payload: P, meta?: Object | null): Action<P>;
+  (payload?: P, meta?: Object | null): Action<P>;
 }
 
 export interface EmptyActionCreator extends ActionCreator<undefined> {
