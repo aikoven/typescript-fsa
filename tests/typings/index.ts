@@ -23,22 +23,46 @@ function testPayload() {
   const g = withoutPayload({foo: 'bar'});
 }
 
-function testEmptyAsyncPayload() {
-  const emptyAsync = actionCreator.async<undefined,
-                                         {foo: string},
-                                         {bar: string}>('EMPTY_ASYNC');
+function testAsyncPayload() {
+  const async = actionCreator.async<{foo: string},
+                                    {bar: string},
+                                    {baz: string}>('ASYNC');
 
-  const started = emptyAsync.started();
+  const started = async.started({foo: 'foo'});
   // typings:expect-error
-  const started1 = emptyAsync.started({});
+  const started1 = async.started({});
+  // typings:expect-error
+  const started2 = async.started();
 
-  const done = emptyAsync.done({result: {foo: 'foo'}});
+  const done = async.done({
+    params: {foo: 'foo'},
+    result: {bar: 'bar'},
+  });
   // typings:expect-error
-  const done1 = emptyAsync.done({result: {foo: 1}});
+  const done1 = async.done({
+    params: {foo: 1},
+    result: {bar: 'bar'},
+  });
+  // typings:expect-error
+  const done2 = async.done({
+    params: {foo: 'foo'},
+    result: {bar: 1},
+  });
 
-  const failed = emptyAsync.failed({error: {bar: 'bar'}});
+  const failed = async.failed({
+    params: {foo: 'foo'},
+    error: {baz: 'baz'},
+  });
   // typings:expect-error
-  const failed1 = emptyAsync.failed({error: {bar: 1}});
+  const failed1 = async.failed({
+    params: {foo: 1},
+    error: {baz: 'baz'},
+  });
+  // typings:expect-error
+  const failed2 = async.failed({
+    params: {foo: 'foo'},
+    error: {baz: 1},
+  });
 }
 
 function testIsType() {
