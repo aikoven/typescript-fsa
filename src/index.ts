@@ -2,11 +2,13 @@ export interface AnyAction {
   type: any;
 }
 
+export type Meta = null | {[key: string]: any};
+
 export interface Action<P> extends AnyAction {
   type: string;
   payload: P;
   error?: boolean;
-  meta?: Object | null;
+  meta?: Meta;
 }
 
 export interface Success<P, S> {
@@ -28,11 +30,11 @@ export function isType<P>(
 
 export interface ActionCreator<P> {
   type: string;
-  (payload: P, meta?: Object | null): Action<P>;
+  (payload: P, meta?: Meta): Action<P>;
 }
 
 export interface EmptyActionCreator extends ActionCreator<undefined> {
-  (payload?: undefined, meta?: Object | null): Action<undefined>;
+  (payload?: undefined, meta?: Meta): Action<undefined>;
 }
 
 export interface AsyncActionCreators<P, S, E> {
@@ -43,18 +45,18 @@ export interface AsyncActionCreators<P, S, E> {
 }
 
 export interface ActionCreatorFactory {
-  (type: string, commonMeta?: Object | null,
+  (type: string, commonMeta?: Meta,
    error?: boolean): EmptyActionCreator;
-  <P>(type: string, commonMeta?: Object | null,
+  <P>(type: string, commonMeta?: Meta,
       isError?: boolean): ActionCreator<P>;
-  <P>(type: string, commonMeta?: Object | null,
+  <P>(type: string, commonMeta?: Meta,
       isError?: (payload: P) => boolean): ActionCreator<P>;
 
   async<P, S>(
-    type: string, commonMeta?: Object | null,
+    type: string, commonMeta?: Meta,
   ): AsyncActionCreators<P, S, any>;
   async<P, S, E>(
-    type: string, commonMeta?: Object | null,
+    type: string, commonMeta?: Meta,
   ): AsyncActionCreators<P, S, E>;
 }
 
@@ -74,7 +76,7 @@ export default function actionCreatorFactory(
   const base = prefix ? `${prefix}/` : "";
 
   function actionCreator <P>(
-    type: string, commonMeta?: Object | null,
+    type: string, commonMeta?: Meta,
     isError: ((payload: P) => boolean) | boolean = defaultIsError,
   ): ActionCreator<P> {
     const fullType = base + type;
@@ -87,7 +89,7 @@ export default function actionCreatorFactory(
     }
 
     return Object.assign(
-      (payload: P, meta?: Object | null) => {
+      (payload: P, meta?: Meta) => {
         const action: Action<P> = {
           type: fullType,
           payload,
@@ -108,7 +110,7 @@ export default function actionCreatorFactory(
   }
 
   function asyncActionCreators<P, S, E>(
-    type: string, commonMeta?: Object | null,
+    type: string, commonMeta?: Meta,
   ): AsyncActionCreators<P, S, E> {
     return {
       type: base + type,

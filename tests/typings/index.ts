@@ -81,3 +81,22 @@ function testIsType() {
     const foo: {} = action.payload;
   }
 }
+
+function testMeta() {
+  const a = actionCreator<{foo: string}>('');
+
+  a({foo: 'foo'});
+  a({foo: 'foo'}, null);
+  // typings:expect-error
+  a({foo: 'foo'}, 1);
+  // typings:expect-error
+  a({foo: 'foo'}, 'foo');
+  // typings:expect-error
+  a({foo: 'foo'}, true);
+
+  const action = a({foo: 'foo'}, {bar: 'baz'});
+
+  // typings:expect-error
+  action.meta.foo;
+  action.meta!.foo;
+}
