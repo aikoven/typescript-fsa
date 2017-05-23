@@ -137,6 +137,7 @@ const reducer = (state: State, action: Action): State => {
 ## Resources
 
 * [Type-safe Flux Standard Actions (FSA) in React Using TypeScript FSA](https://www.triplet.fi/blog/type-safe-flux-standard-actions-fsa-in-react-using-typescript-fsa/)
+* [Type-safe Asynchronous Actions (Redux Thunk) Using TypeScript FSA](https://www.triplet.fi/blog/type-safe-asynchronous-actions-redux-thunk-using-typescript-fsa/)
 
 ## API
 
