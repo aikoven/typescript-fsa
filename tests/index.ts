@@ -107,6 +107,17 @@ test('prefix', assert => {
   assert.end();
 });
 
+test('async readme example', assert => {
+  const actionCreator = actionCreatorFactory();
+  const doSomething =
+    actionCreator.async<{foo: string},   // parameter type
+                        {bar: number},   // success type
+                        {code: number}   // error type
+                       >('DO_SOMETHING');
+  assert.equal(doSomething.started({foo: 'lol'}).type, 'DO_SOMETHING_STARTED');
+  assert.end();
+});
+
 test('async', assert => {
   const actionCreator = actionCreatorFactory('prefix');
 
