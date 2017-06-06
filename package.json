@@ -28,7 +28,7 @@
     "@types/tape": "^4.2.28",
     "rimraf": "^2.5.4",
     "tape": "^4.6.2",
-    "ts-node": "^3.0.0",
+    "ts-node": "^3.0.6",
     "tslint": "^5.0.0",
     "typescript": "^2.1.5",
     "typings-tester": "^0.2.2"
