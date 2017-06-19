@@ -12,22 +12,31 @@
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
+    "dist",
     "lib",
     "src"
   ],
   "repository": "aikoven/typescript-fsa",
   "scripts": {
-    "clean": "rimraf lib",
+    "clean": "rimraf lib dist",
     "lint": "tslint -c tslint.json src/index.ts tests/index.ts",
     "test": "ts-node -P tsconfig.tests.json node_modules/.bin/tape tests/*.ts",
-    "build": "tsc",
+    "build:commonjs": "tsc",
+    "build:umd": "NODE_ENV=development rollup -c -o dist/typescript-fsa.js",
+    "build:umd:min": "NODE_ENV=production rollup -c -o dist/typescript-fsa.min.js",
+    "build": "npm run build:commonjs && npm run build:umd && npm run build:umd:min",
     "prepublish": "npm run clean && npm run lint && npm run test && npm run build"
   },
   "author": "Daniel Lytkin <dan.lytkin@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@alexlur/rollup-plugin-typescript": "^1.0.4",
     "@types/tape": "^4.2.28",
     "rimraf": "^2.5.4",
+    "rollup": "^0.43.0",
+    "rollup-plugin-execute": "^1.0.0",
+    "rollup-plugin-replace": "^1.1.1",
+    "rollup-plugin-uglify": "^2.0.1",
     "tape": "^4.6.2",
     "ts-node": "^3.0.6",
     "tslint": "^5.0.0",

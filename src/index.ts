@@ -67,7 +67,7 @@ declare const process: {
 };
 
 
-export default function actionCreatorFactory(
+export function actionCreatorFactory(
   prefix?: string | null,
   defaultIsError: (payload: any) => boolean = p => p instanceof Error,
 ): ActionCreatorFactory {
@@ -122,3 +122,5 @@ export default function actionCreatorFactory(
 
   return Object.assign(actionCreator, {async: asyncActionCreators});
 }
+
+export default actionCreatorFactory;

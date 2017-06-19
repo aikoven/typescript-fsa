@@ -8,3 +8,5 @@ npm-*.log
 
 # OS X
 .DS_Store
+
+dist

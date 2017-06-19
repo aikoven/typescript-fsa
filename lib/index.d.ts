@@ -39,4 +39,5 @@ export interface ActionCreatorFactory {
     async<P, S>(type: string, commonMeta?: Meta): AsyncActionCreators<P, S, any>;
     async<P, S, E>(type: string, commonMeta?: Meta): AsyncActionCreators<P, S, E>;
 }
-export default function actionCreatorFactory(prefix?: string | null, defaultIsError?: (payload: any) => boolean): ActionCreatorFactory;
+export declare function actionCreatorFactory(prefix?: string | null, defaultIsError?: (payload: any) => boolean): ActionCreatorFactory;
+export default actionCreatorFactory;
