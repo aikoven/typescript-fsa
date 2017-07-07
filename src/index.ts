@@ -105,7 +105,7 @@ export function actionCreatorFactory(
 
         return action;
       },
-      {type: fullType},
+      {type: fullType, toString: () => fullType},
     );
   }
 
