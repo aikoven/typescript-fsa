@@ -132,6 +132,7 @@ const reducer = (state: State, action: Action): State => {
 ## Companion packages
 
 * [typescript-fsa-redux-saga](https://github.com/aikoven/typescript-fsa-redux-saga)
+* [typescript-fsa-redux-observable](https://github.com/m0a/typescript-fsa-redux-observable)
 * [typescript-fsa-redux-thunk](https://github.com/xdave/typescript-fsa-redux-thunk)
 * [typescript-fsa-reducers](https://github.com/dphilipson/typescript-fsa-reducers)
 
