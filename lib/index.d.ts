@@ -19,6 +19,7 @@ export interface Failure<P, E> {
     error: E;
 }
 export declare function isType<P>(action: AnyAction, actionCreator: ActionCreator<P>): action is Action<P>;
+export declare function createTypeChecker<P>(actionCreator: ActionCreator<P>): (action: AnyAction) => action is Action<P>;
 export interface ActionCreator<P> {
     type: string;
     (payload: P, meta?: Meta): Action<P>;
