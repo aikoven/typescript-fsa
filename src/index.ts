@@ -28,6 +28,11 @@ export function isType<P>(
   return action.type === actionCreator.type;
 }
 
+export function createTypeChecker<P>(actionCreator: ActionCreator<P>) {
+  return (action: AnyAction): action is Action<P> =>
+    isType(action, actionCreator);
+}
+
 export interface ActionCreator<P> {
   type: string;
   (payload: P, meta?: Meta): Action<P>;
