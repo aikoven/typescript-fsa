@@ -3,7 +3,7 @@
 A simple Action Creator library for TypeScript. Its goal is to provide simple
 yet type-safe experience with Flux actions.
 Created actions are FSA-compliant:
- 
+
 ```ts
 interface Action<P> {
   type: string;
@@ -11,7 +11,7 @@ interface Action<P> {
   error?: boolean;
   meta?: Object;
 }
-``` 
+```
 
 ## Installation
 
@@ -28,7 +28,7 @@ import actionCreatorFactory from 'typescript-fsa';
 
 const actionCreator = actionCreatorFactory();
 
-// Specify payload shape as generic type argument. 
+// Specify payload shape as generic type argument.
 const somethingHappened = actionCreator<{foo: string}>('SOMETHING_HAPPENED');
 
 // Get action creator type.
@@ -36,13 +36,13 @@ console.log(somethingHappened.type);  // SOMETHING_HAPPENED
 
 // Create action.
 const action = somethingHappened({foo: 'bar'});
-console.log(action);  // {type: 'SOMETHING_HAPPENED', payload: {foo: 'bar'}}  
+console.log(action);  // {type: 'SOMETHING_HAPPENED', payload: {foo: 'bar'}}
 ```
 
 ### Async Action Creators
 
-Async Action Creators are objects with properties `started`, `done` and 
-`failed` whose values are action creators. 
+Async Action Creators are objects with properties `started`, `done` and
+`failed` whose values are action creators.
 
 ```ts
 import actionCreatorFactory from 'typescript-fsa';
@@ -50,7 +50,7 @@ import actionCreatorFactory from 'typescript-fsa';
 const actionCreator = actionCreatorFactory();
 
 // specify parameters and result shapes as generic type arguments
-const doSomething = 
+const doSomething =
   actionCreator.async<{foo: string},   // parameter type
                       {bar: number},   // success type
                       {code: number}   // error type
@@ -70,19 +70,19 @@ console.log(doSomething.done({
 
 console.log(doSomething.failed({
   params: {foo: 'lol'},
-  error: {code: 42},    
+  error: {code: 42},
 });
 // {type: 'DO_SOMETHING_FAILED', payload: {
 //   params: {foo: 'lol'},
 //   error: {code: 42},
 // }, error: true}
 ```
-  
+
 ### Actions With Type Prefix
 
-You can specify a prefix that will be prepended to all action types. This is 
-useful to namespace library actions as well as for large projects where it's 
-convenient to keep actions near the component that dispatches them. 
+You can specify a prefix that will be prepended to all action types. This is
+useful to namespace library actions as well as for large projects where it's
+convenient to keep actions near the component that dispatches them.
 
 ```ts
 // MyComponent.actions.ts
@@ -93,8 +93,8 @@ const actionCreator = actionCreatorFactory('MyComponent');
 const somethingHappened = actionCreator<{foo: string}>('SOMETHING_HAPPENED');
 
 const action = somethingHappened({foo: 'bar'});
-console.log(action);  
-// {type: 'MyComponent/SOMETHING_HAPPENED', payload: {foo: 'bar'}}  
+console.log(action);
+// {type: 'MyComponent/SOMETHING_HAPPENED', payload: {foo: 'bar'}}
 ```
 
 ### Redux
@@ -105,28 +105,65 @@ import actionCreatorFactory from 'typescript-fsa';
 
 const actionCreator = actionCreatorFactory();
 
-export const somethingHappened = 
+export const somethingHappened =
   actionCreator<{foo: string}>('SOMETHING_HAPPENED');
+export const somethingAsync =
+  actionCreator.async<{foo: string},
+                      {bar: string}
+                     >('SOMETHING_ASYNC');
 
 
 // reducer.ts
 import {Action} from 'redux';
 import {isType} from 'typescript-fsa';
-import {somethingHappened} from './actions';
+import {somethingHappened, somethingAsync} from './actions';
 
 type State = {bar: string};
 
-const reducer = (state: State, action: Action): State => {
+export const reducer = (state: State, action: Action): State => {
   if (isType(action, somethingHappened)) {
     // action.payload is inferred as {foo: string};
-    
+
     action.payload.bar;  // error
-    
+
     return {bar: action.payload.foo};
   }
 
-  return state; 
+  if (isType(action, somethingAsync.started)) {
+    return {bar: action.payload.foo};
+  }
+
+  if (isType(action, somethingAsync.done)) {
+    return {bar: action.payload.result.bar};
+  }
+
+  return state;
 };
+
+
+// epic.ts
+import {Action} from 'redux';
+import {createTypeChecker} from 'typescript-fsa';
+import {Observable} from 'rxjs';
+import {somethingAsync} from './actions';
+
+const isSomethingAsyncStarted = createTypeChecker(somethingAsync.started);
+
+export const epic = (actions$: Observable<Action>) =>
+  actions$.filter(isSomethingAsyncStarted)
+    .delay(2000)
+    .map(action => {
+      // action.payload is inferred as {foo: string};
+
+      action.payload.bar;  // error
+
+      return somethingAsync.done({
+        params: action.payload,
+        result: {
+          bar: 'bar',
+        },
+      });
+    });
 ```
 
 ## Companion packages
@@ -153,7 +190,7 @@ Creates Action Creator factory with optional prefix for action types.
 
 ### `isType(action: Action, actionCreator: ActionCreator): boolean`
 
-Returns `true` if action has the same type as action creator. Defines 
+Returns `true` if action has the same type as action creator. Defines
 [Type Guard](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards)
 that lets TypeScript know `payload` type inside blocks where `isType` returned
 `true`:
@@ -165,6 +202,25 @@ if (isType(action, somethingHappened)) {
   // action.payload has type {foo: string};
 }
 ```
+
+### `createTypeChecker(actionCreator: ActionCreator): (action: Action) => boolean`
+
+Identical to `isType` except it enables partial application by returning
+a single argument type guard function, suitable for passing to a filtering
+function like `Array.prototype.filter` or [RxJS](http://reactivex.io/rxjs/)'s
+`Observable.prototype.filter`.
+
+```ts
+const somethingHappened = actionCreator<{foo: string}>('SOMETHING_HAPPENED');
+const isSomethingHappened = createTypeChecker(somethingHappened)
+
+const somethingHappenedArray: Action<{foo: string}> =
+  [somethingHappened({foo: 'foo'}), {}].filter(isSomethingHappened)
+```
+
+For more on using `Array.prototype.filter` as a type guard, see
+[this github issue](https://github.com/Microsoft/TypeScript/issues/7657).
+
 
 [npm-image]: https://badge.fury.io/js/typescript-fsa.svg
 [npm-url]: https://badge.fury.io/js/typescript-fsa
