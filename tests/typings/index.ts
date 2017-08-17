@@ -1,4 +1,4 @@
-import actionCreatorFactory, {isType, AnyAction} from "typescript-fsa";
+import actionCreatorFactory, {isType, createTypeChecker, AnyAction} from "typescript-fsa";
 
 
 declare const action: AnyAction;
@@ -77,6 +77,25 @@ function testIsType() {
   }
 
   if (isType(action, withoutPayload)) {
+    // typings:expect-error
+    const foo: {} = action.payload;
+  }
+}
+
+function testCreateTypeChecker() {
+  const withPayload = actionCreator<{foo: string}>('WITH_PAYLOAD');
+  const withoutPayload = actionCreator('WITHOUT_PAYLOAD');
+
+  const isWithPayload = createTypeChecker(withPayload)
+  if (isWithPayload(action)) {
+    const foo: string = action.payload.foo;
+
+    // typings:expect-error
+    action.payload.bar;
+  }
+
+  const isWithoutPayload = createTypeChecker(withoutPayload)
+  if (isWithoutPayload(action)) {
     // typings:expect-error
     const foo: {} = action.payload;
   }
