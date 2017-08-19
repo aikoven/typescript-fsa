@@ -143,14 +143,11 @@ export const reducer = (state: State, action: Action): State => {
 
 // epic.ts
 import {Action} from 'redux';
-import {createTypeChecker} from 'typescript-fsa';
 import {Observable} from 'rxjs';
 import {somethingAsync} from './actions';
 
-const isSomethingAsyncStarted = createTypeChecker(somethingAsync.started);
-
 export const epic = (actions$: Observable<Action>) =>
-  actions$.filter(isSomethingAsyncStarted)
+  actions$.filter(somethingAsync.started.match)
     .delay(2000)
     .map(action => {
       // action.payload is inferred as {foo: string};
@@ -203,19 +200,29 @@ if (isType(action, somethingHappened)) {
 }
 ```
 
-### `createTypeChecker(actionCreator: ActionCreator): (action: Action) => boolean`
+### `ActionCreator#match(action: Action): boolean`
 
-Identical to `isType` except it enables partial application by returning
-a single argument type guard function, suitable for passing to a filtering
-function like `Array.prototype.filter` or [RxJS](http://reactivex.io/rxjs/)'s
-`Observable.prototype.filter`.
+Identical to `isType` except it is exposed as a bound method of an action
+creator.  Since it is bound and takes a single argument it is ideal for passing
+to a filtering function like `Array.prototype.filter` or
+[RxJS](http://reactivex.io/rxjs/)'s `Observable.prototype.filter`.
 
 ```ts
 const somethingHappened = actionCreator<{foo: string}>('SOMETHING_HAPPENED');
-const isSomethingHappened = createTypeChecker(somethingHappened)
+const somethingElseHappened =
+  actionCreator<{bar: number}>('SOMETHING_ELSE_HAPPENED');
 
-const somethingHappenedArray: Action<{foo: string}> =
-  [somethingHappened({foo: 'foo'}), {}].filter(isSomethingHappened)
+if (somethingHappened.match(action)) {
+  // action.payload has type {foo: string};
+}
+
+const actionArray = [
+  somethingHappened({foo: 'foo'}),
+  somethingElseHappened({bar: 5}),
+]
+
+// somethingHappenedArray has inferred type Action<{foo: string}>[];
+const somethingHappenedArray = actionArray.filter(somethingHappened.match)
 ```
 
 For more on using `Array.prototype.filter` as a type guard, see
