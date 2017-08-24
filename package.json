@@ -1,6 +1,6 @@
 {
   "name": "typescript-fsa",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "description": "Type-safe action creator utilities",
   "keywords": [
     "redux",
