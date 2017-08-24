@@ -184,6 +184,28 @@ Creates Action Creator factory with optional prefix for action types.
 * `prefix?: string`: Prefix to be prepended to action types.
 * `defaultIsError?: Predicate`: Function that detects whether action is error
  given the payload. Default is `payload => payload instanceof Error`.
+ 
+### `ActionCreatorFactory<P>(type: string, commonMeta?: object, isError?: boolean): ActionCreator<P>`
+
+Creates Action Creator that produces actions with given `type` and payload of type `P`.
+
+* `type: string`: Type of created actions.
+* `commonMeta?: object`: Metadata added to created actions.
+* `isError?: boolean`: Defines whether created actions are error actions.
+
+### `ActionCreatorFactory#async<P, S, E>(type: string, commonMeta?: object): AsyncActionCreators<P, S, E>`
+
+Creates three Action Creators: `started`, `done` and `failed`, useful to wrap asynchronous processes. 
+
+* `type: string`: Prefix for types of created actions, which will have types `${type}_STARTED`, `${type}_DONE` and `${type}_FAILED`.
+* `commonMeta?: object`: Metadata added to created actions.
+
+### `ActionCreator(payload: P, meta?: object): Action<P>`
+
+Creates action with given payload and metadata.
+
+* `payload: P`: Action payload.
+* `meta?: object`: Action metadata. Merged with `commonMeta` of Action Creator.
 
 ### `isType(action: Action, actionCreator: ActionCreator): boolean`
 
