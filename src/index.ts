@@ -30,6 +30,7 @@ export function isType<P>(
 
 export interface ActionCreator<P> {
   type: string;
+  match: (action: AnyAction) => action is Action<P>;
   (payload: P, meta?: Meta): Action<P>;
 }
 
@@ -75,7 +76,7 @@ export function actionCreatorFactory(
 
   const base = prefix ? `${prefix}/` : "";
 
-  function actionCreator <P>(
+  function actionCreator<P>(
     type: string, commonMeta?: Meta,
     isError: ((payload: P) => boolean) | boolean = defaultIsError,
   ): ActionCreator<P> {
@@ -105,7 +106,12 @@ export function actionCreatorFactory(
 
         return action;
       },
-      {type: fullType, toString: () => fullType},
+      {
+        type: fullType,
+        toString: () => fullType,
+        match: (action: AnyAction): action is Action<P> =>
+          action.type === fullType,
+      },
     );
   }
 

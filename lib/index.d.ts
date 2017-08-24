@@ -21,6 +21,7 @@ export interface Failure<P, E> {
 export declare function isType<P>(action: AnyAction, actionCreator: ActionCreator<P>): action is Action<P>;
 export interface ActionCreator<P> {
     type: string;
+    match: (action: AnyAction) => action is Action<P>;
     (payload: P, meta?: Meta): Action<P>;
 }
 export interface EmptyActionCreator extends ActionCreator<undefined> {

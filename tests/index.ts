@@ -17,6 +17,20 @@ test('isType', assert => {
   assert.end();
 });
 
+test('actionCreator.match', assert => {
+  const actionCreator = actionCreatorFactory();
+
+  const action1 = actionCreator('ACTION_1');
+  const action2 = actionCreator('ACTION_2');
+
+  const action = action1();
+
+  assert.true(action1.match(action));
+  assert.false(action2.match(action));
+
+  assert.end();
+});
+
 test('basic', assert => {
   const actionCreator = actionCreatorFactory();
 

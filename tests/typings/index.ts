@@ -82,6 +82,23 @@ function testIsType() {
   }
 }
 
+function testMatch() {
+  const withPayload = actionCreator<{foo: string}>('WITH_PAYLOAD');
+  const withoutPayload = actionCreator('WITHOUT_PAYLOAD');
+
+  if (withPayload.match(action)) {
+    const foo: string = action.payload.foo;
+
+    // typings:expect-error
+    action.payload.bar;
+  }
+
+  if (withoutPayload.match(action)) {
+    // typings:expect-error
+    const foo: {} = action.payload;
+  }
+}
+
 function testMeta() {
   const a = actionCreator<{foo: string}>('');
 
