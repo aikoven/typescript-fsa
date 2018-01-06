@@ -62,7 +62,7 @@ console.log(doSomething.started({foo: 'lol'}));
 console.log(doSomething.done({
   params: {foo: 'lol'},
   result: {bar: 42},
-});
+}));
 // {type: 'DO_SOMETHING_DONE', payload: {
 //   params: {foo: 'lol'},
 //   result: {bar: 42},
@@ -71,7 +71,7 @@ console.log(doSomething.done({
 console.log(doSomething.failed({
   params: {foo: 'lol'},
   error: {code: 42},
-});
+}));
 // {type: 'DO_SOMETHING_FAILED', payload: {
 //   params: {foo: 'lol'},
 //   error: {code: 42},
