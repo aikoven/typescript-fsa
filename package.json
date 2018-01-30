@@ -42,5 +42,13 @@
     "tslint": "^5.0.0",
     "typescript": "^2.1.5",
     "typings-tester": "^0.3.0"
+  },
+  "greenkeeper": {
+    "ignore": [
+      "rollup",
+      "rollup-plugin-execute",
+      "rollup-plugin-replace",
+      "rollup-plugin-uglify"
+    ]
   }
 }
