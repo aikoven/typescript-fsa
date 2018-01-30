@@ -36,7 +36,7 @@
     "rollup": "^0.46.0",
     "rollup-plugin-execute": "^1.0.0",
     "rollup-plugin-replace": "^1.1.1",
-    "rollup-plugin-uglify": "^2.0.1",
+    "rollup-plugin-uglify": "^3.0.0",
     "tape": "^4.6.2",
     "ts-node": "^4.0.0",
     "tslint": "^5.0.0",
