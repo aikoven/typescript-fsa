@@ -40,7 +40,7 @@
     "tape": "^4.6.2",
     "ts-node": "^4.0.0",
     "tslint": "^5.0.0",
-    "typescript": "^2.1.5",
+    "typescript": "^2.8.1",
     "typings-tester": "^0.3.0"
   },
   "greenkeeper": {

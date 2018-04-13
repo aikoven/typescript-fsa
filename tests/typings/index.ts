@@ -65,6 +65,111 @@ function testAsyncPayload() {
   });
 }
 
+function testAsyncNoParams() {
+  const asyncNoParams = actionCreator.async<undefined,
+                                            {bar: string},
+                                            {baz: string}>('ASYNC_NO_PARAMS');
+
+  const started = asyncNoParams.started();
+  // typings:expect-error
+  const started1 = asyncNoParams.started({foo: 'foo'});
+
+  const done = asyncNoParams.done({
+    result: {bar: 'bar'},
+  });
+  // typings:expect-error
+  const done1 = asyncNoParams.done({
+    params: {foo: 'foo'},
+    result: {bar: 'bar'},
+  });
+  // typings:expect-error
+  const done2 = asyncNoParams.done({
+    result: {bar: 1},
+  });
+
+  const failed = asyncNoParams.failed({
+    error: {baz: 'baz'},
+  });
+  // typings:expect-error
+  const failed1 = asyncNoParams.failed({
+    params: {foo: 'foo'},
+    error: {baz: 'baz'},
+  });
+  // typings:expect-error
+  const failed2 = asyncNoParams.failed({
+    error: {baz: 1},
+  });
+}
+
+function testAsyncNoResult() {
+  const asyncNoResult = actionCreator.async<{foo: string},
+                                            undefined,
+                                            {baz: string}>('ASYNC_NO_RESULT');
+
+  const started = asyncNoResult.started({foo: 'foo'});
+  // typings:expect-error
+  const started1 = asyncNoResult.started({});
+  // typings:expect-error
+  const started2 = asyncNoResult.started();
+
+  const done = asyncNoResult.done({
+    params: {foo: 'foo'},
+  });
+  // typings:expect-error
+  const done1 = asyncNoResult.done({
+    params: {foo: 1},
+  });
+  // typings:expect-error
+  const done2 = asyncNoResult.done({
+    params: {foo: 'foo'},
+    result: {bar: 'bar'},
+  });
+
+  const failed = asyncNoResult.failed({
+    params: {foo: 'foo'},
+    error: {baz: 'baz'},
+  });
+  // typings:expect-error
+  const failed1 = asyncNoResult.failed({
+    params: {foo: 1},
+    error: {baz: 'baz'},
+  });
+  // typings:expect-error
+  const failed2 = asyncNoResult.failed({
+    params: {foo: 'foo'},
+    error: {baz: 1},
+  });
+}
+
+function testAsyncNoParamsAndResult() {
+  const async = actionCreator.async<undefined,
+                                    undefined,
+                                    {baz: string}>('ASYNC');
+
+  const started = async.started();
+  // typings:expect-error
+  const started2 = async.started({foo: 'foo'});
+
+  const done = async.done({});
+  // typings:expect-error
+  const done1 = async.done({
+    params: {foo: 'foo'},
+  });
+  // typings:expect-error
+  const done2 = async.done({
+    result: {bar: 'bar'},
+  });
+
+  const failed = async.failed({
+    error: {baz: 'baz'},
+  });
+  // typings:expect-error
+  const failed1 = async.failed({
+    params: {foo: 'foo'},
+    error: {baz: 'baz'},
+  });
+}
+
 function testIsType() {
   const withPayload = actionCreator<{foo: string}>('WITH_PAYLOAD');
   const withoutPayload = actionCreator('WITHOUT_PAYLOAD');

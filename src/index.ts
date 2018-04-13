@@ -11,15 +11,22 @@ export interface Action<P> extends AnyAction {
   meta?: Meta;
 }
 
-export interface Success<P, S> {
+
+export type RequiredKeys<T> = {
+  [P in keyof T]: T[P] extends undefined ? never : P
+}[keyof T];
+// Makes all properties of type `undefined` optional
+export type Optionalize<T> = Partial<T> & {[P in RequiredKeys<T>]: T[P]};
+
+export type Success<P, S> = Optionalize<{
   params: P;
   result: S;
-}
+}>;
 
-export interface Failure<P, E> {
+export type Failure<P, E> = Optionalize<{
   params: P;
   error: E;
-}
+}>;
 
 export function isType<P>(
   action: AnyAction,
@@ -28,15 +35,14 @@ export function isType<P>(
   return action.type === actionCreator.type;
 }
 
-export interface ActionCreator<P> {
+export type ActionCreator<P> = {
   type: string;
   match: (action: AnyAction) => action is Action<P>;
-  (payload: P, meta?: Meta): Action<P>;
-}
-
-export interface EmptyActionCreator extends ActionCreator<undefined> {
-  (payload?: undefined, meta?: Meta): Action<undefined>;
-}
+} & (
+  P extends undefined
+    ? (payload?: P, meta?: Meta) => Action<P>
+    : (payload: P, meta?: Meta) => Action<P>
+);
 
 export interface AsyncActionCreators<P, S, E> {
   type: string;
@@ -46,11 +52,9 @@ export interface AsyncActionCreators<P, S, E> {
 }
 
 export interface ActionCreatorFactory {
-  (type: string, commonMeta?: Meta,
-   error?: boolean): EmptyActionCreator;
-  <P>(type: string, commonMeta?: Meta,
+  <P = undefined>(type: string, commonMeta?: Meta,
       isError?: boolean): ActionCreator<P>;
-  <P>(type: string, commonMeta?: Meta,
+  <P = undefined>(type: string, commonMeta?: Meta,
       isError?: (payload: P) => boolean): ActionCreator<P>;
 
   async<P, S>(
@@ -79,7 +83,7 @@ export function actionCreatorFactory(
   function actionCreator<P>(
     type: string, commonMeta?: Meta,
     isError: ((payload: P) => boolean) | boolean = defaultIsError,
-  ): ActionCreator<P> {
+  ) {
     const fullType = base + type;
 
     if (process.env.NODE_ENV !== 'production') {
@@ -112,7 +116,7 @@ export function actionCreatorFactory(
         match: (action: AnyAction): action is Action<P> =>
           action.type === fullType,
       },
-    );
+    ) as ActionCreator<P>;
   }
 
   function asyncActionCreators<P, S, E>(
