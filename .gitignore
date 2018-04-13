@@ -2,6 +2,9 @@
 .idea
 *.iml
 
+# VSCode
+.vscode
+
 # NPM
 node_modules
 npm-*.log
