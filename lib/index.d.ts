@@ -10,20 +10,24 @@ export interface Action<P> extends AnyAction {
     error?: boolean;
     meta?: Meta;
 }
-export declare type RequiredKeys<T> = {
-    [P in keyof T]: T[P] extends undefined ? never : P;
-}[keyof T];
-export declare type Optionalize<T> = Partial<T> & {
-    [P in RequiredKeys<T>]: T[P];
-};
-export declare type Success<P, S> = Optionalize<{
+export declare type Success<P, S> = (P extends undefined ? {
+    params?: P;
+} : {
     params: P;
+}) & (S extends undefined ? {
+    result?: S;
+} : {
     result: S;
-}>;
-export declare type Failure<P, E> = Optionalize<{
+});
+export declare type Failure<P, E> = (P extends undefined ? {
+    params?: P;
+} : {
     params: P;
+}) & (E extends undefined ? {
+    error?: E;
+} : {
     error: E;
-}>;
+});
 export declare function isType<P>(action: AnyAction, actionCreator: ActionCreator<P>): action is Action<P>;
 export declare type ActionCreator<P> = {
     type: string;
