@@ -11,22 +11,13 @@ export interface Action<P> extends AnyAction {
   meta?: Meta;
 }
 
+export type Success<P, S> =
+  (P extends undefined ? { params?: P; } : { params: P; }) &
+  (S extends undefined ? { result?: S; } : { result: S; });
 
-export type RequiredKeys<T> = {
-  [P in keyof T]: T[P] extends undefined ? never : P
-}[keyof T];
-// Makes all properties of type `undefined` optional
-export type Optionalize<T> = Partial<T> & {[P in RequiredKeys<T>]: T[P]};
-
-export type Success<P, S> = Optionalize<{
-  params: P;
-  result: S;
-}>;
-
-export type Failure<P, E> = Optionalize<{
-  params: P;
-  error: E;
-}>;
+export type Failure<P, E> =
+  (P extends undefined ? { params?: P; } : { params: P; }) &
+  (E extends undefined ? { error?: E; } : { error: E; });
 
 export function isType<P>(
   action: AnyAction,
