@@ -4,47 +4,46 @@ export interface AnyAction {
 export declare type Meta = null | {
     [key: string]: any;
 };
-export interface Action<P> extends AnyAction {
+export interface Action<Payload> extends AnyAction {
     type: string;
-    payload: P;
+    payload: Payload;
     error?: boolean;
     meta?: Meta;
 }
-export declare type Success<P, R> = ({
-    params: P;
-} | (P extends void ? {
-    params?: P;
+export declare type Success<Params, Result> = ({
+    params: Params;
+} | (Params extends void ? {
+    params?: Params;
 } : never)) & ({
-    result: R;
-} | (R extends void ? {
-    result?: R;
+    result: Result;
+} | (Result extends void ? {
+    result?: Result;
 } : never));
-export declare type Failure<P, E> = ({
-    params: P;
-} | (P extends void ? {
-    params?: P;
+export declare type Failure<Params, Error> = ({
+    params: Params;
+} | (Params extends void ? {
+    params?: Params;
 } : never)) & {
-    error: E;
+    error: Error;
 };
-export declare function isType<P>(action: AnyAction, actionCreator: ActionCreator<P>): action is Action<P>;
-export declare type ActionCreator<P> = {
+export declare function isType<Payload>(action: AnyAction, actionCreator: ActionCreator<Payload>): action is Action<Payload>;
+export declare type ActionCreator<Payload> = {
     type: string;
-    match: (action: AnyAction) => action is Action<P>;
-    (payload: P, meta?: Meta): Action<P>;
-} & (P extends void ? {
-    (payload?: P, meta?: Meta): Action<P>;
+    match: (action: AnyAction) => action is Action<Payload>;
+    (payload: Payload, meta?: Meta): Action<Payload>;
+} & (Payload extends void ? {
+    (payload?: Payload, meta?: Meta): Action<Payload>;
 } : {});
-export interface AsyncActionCreators<P, R, E> {
+export interface AsyncActionCreators<Params, Result, Error = {}> {
     type: string;
-    started: ActionCreator<P>;
-    done: ActionCreator<Success<P, R>>;
-    failed: ActionCreator<Failure<P, E>>;
+    started: ActionCreator<Params>;
+    done: ActionCreator<Success<Params, Result>>;
+    failed: ActionCreator<Failure<Params, Error>>;
 }
 export interface ActionCreatorFactory {
-    <P = void>(type: string, commonMeta?: Meta, isError?: boolean): ActionCreator<P>;
-    <P = void>(type: string, commonMeta?: Meta, isError?: (payload: P) => boolean): ActionCreator<P>;
-    async<P, R>(type: string, commonMeta?: Meta): AsyncActionCreators<P, R, {}>;
-    async<P, R, E>(type: string, commonMeta?: Meta): AsyncActionCreators<P, R, E>;
+    <Payload = void>(type: string, commonMeta?: Meta, isError?: boolean): ActionCreator<Payload>;
+    <Payload = void>(type: string, commonMeta?: Meta, isError?: (payload: Payload) => boolean): ActionCreator<Payload>;
+    async<Params, Result, Error = {}>(type: string, commonMeta?: Meta): AsyncActionCreators<Params, Result, Error>;
 }
 export declare function actionCreatorFactory(prefix?: string | null, defaultIsError?: (payload: any) => boolean): ActionCreatorFactory;
 export default actionCreatorFactory;
