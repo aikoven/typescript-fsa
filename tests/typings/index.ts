@@ -66,7 +66,7 @@ function testAsyncPayload() {
 }
 
 function testAsyncNoParams() {
-  const asyncNoParams = actionCreator.async<undefined,
+  const asyncNoParams = actionCreator.async<void,
                                             {bar: string},
                                             {baz: string}>('ASYNC_NO_PARAMS');
 
@@ -103,7 +103,7 @@ function testAsyncNoParams() {
 
 function testAsyncNoResult() {
   const asyncNoResult = actionCreator.async<{foo: string},
-                                            undefined,
+                                            void,
                                             {baz: string}>('ASYNC_NO_RESULT');
 
   const started = asyncNoResult.started({foo: 'foo'});
@@ -142,8 +142,8 @@ function testAsyncNoResult() {
 }
 
 function testAsyncNoParamsAndResult() {
-  const async = actionCreator.async<undefined,
-                                    undefined,
+  const async = actionCreator.async<void,
+                                    void,
                                     {baz: string}>('ASYNC');
 
   const started = async.started();
