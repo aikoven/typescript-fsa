@@ -12,4 +12,5 @@ npm-*.log
 # OS X
 .DS_Store
 
+lib
 dist
