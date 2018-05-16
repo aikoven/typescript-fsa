@@ -1,13 +1,12 @@
 # TypeScript FSA [![npm version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url]
 
-A simple Action Creator library for TypeScript. Its goal is to provide simple
-yet type-safe experience with Flux actions.
+Action Creator library for TypeScript. Its goal is to provide type-safe experience with Flux actions with minimum boilerplate.
 Created actions are FSA-compliant:
 
 ```ts
-interface Action<P> {
+interface Action<Payload> {
   type: string;
-  payload: P;
+  payload: Payload;
   error?: boolean;
   meta?: Object;
 }
@@ -181,30 +180,35 @@ export const epic = (actions$: Observable<Action>) =>
 
 Creates Action Creator factory with optional prefix for action types.
 
-* `prefix?: string`: Prefix to be prepended to action types.
+* `prefix?: string`: Prefix to be prepended to action types as `<prefix>/<type>`.
 * `defaultIsError?: Predicate`: Function that detects whether action is error
  given the payload. Default is `payload => payload instanceof Error`.
- 
-### `ActionCreatorFactory<P>(type: string, commonMeta?: object, isError?: boolean): ActionCreator<P>`
 
-Creates Action Creator that produces actions with given `type` and payload of type `P`.
+### `ActionCreatorFactory<Payload>(type: string, commonMeta?: object, isError?: boolean): ActionCreator<Payload>`
+
+Creates Action Creator that produces actions with given `type` and payload of type `Payload`.
 
 * `type: string`: Type of created actions.
 * `commonMeta?: object`: Metadata added to created actions.
 * `isError?: boolean`: Defines whether created actions are error actions.
 
-### `ActionCreatorFactory#async<P, S, E>(type: string, commonMeta?: object): AsyncActionCreators<P, S, E>`
+### `ActionCreatorFactory#async<Params, Result, Error>(type: string, commonMeta?: object): AsyncActionCreators<Params, Result, Error>`
 
-Creates three Action Creators: `started`, `done` and `failed`, useful to wrap asynchronous processes. 
+Creates three Action Creators:
+* `started: ActionCreator<Params>`
+* `done: ActionCreator<{params: Params, result: Result}>`
+* `failed: ActionCreator<{params: Params, error: Error}>`
+
+Useful to wrap asynchronous processes.
 
 * `type: string`: Prefix for types of created actions, which will have types `${type}_STARTED`, `${type}_DONE` and `${type}_FAILED`.
 * `commonMeta?: object`: Metadata added to created actions.
 
-### `ActionCreator(payload: P, meta?: object): Action<P>`
+### `ActionCreator<Payload>#(payload: Payload, meta?: object): Action<Payload>`
 
 Creates action with given payload and metadata.
 
-* `payload: P`: Action payload.
+* `payload: Payload`: Action payload.
 * `meta?: object`: Action metadata. Merged with `commonMeta` of Action Creator.
 
 ### `isType(action: Action, actionCreator: ActionCreator): boolean`
@@ -218,14 +222,14 @@ that lets TypeScript know `payload` type inside blocks where `isType` returned
 const somethingHappened = actionCreator<{foo: string}>('SOMETHING_HAPPENED');
 
 if (isType(action, somethingHappened)) {
-  // action.payload has type {foo: string};
+  // action.payload has type {foo: string}
 }
 ```
 
 ### `ActionCreator#match(action: Action): boolean`
 
 Identical to `isType` except it is exposed as a bound method of an action
-creator.  Since it is bound and takes a single argument it is ideal for passing
+creator. Since it is bound and takes a single argument it is ideal for passing
 to a filtering function like `Array.prototype.filter` or
 [RxJS](http://reactivex.io/rxjs/)'s `Observable.prototype.filter`.
 
@@ -235,16 +239,16 @@ const somethingElseHappened =
   actionCreator<{bar: number}>('SOMETHING_ELSE_HAPPENED');
 
 if (somethingHappened.match(action)) {
-  // action.payload has type {foo: string};
+  // action.payload has type {foo: string}
 }
 
 const actionArray = [
   somethingHappened({foo: 'foo'}),
   somethingElseHappened({bar: 5}),
-]
+];
 
-// somethingHappenedArray has inferred type Action<{foo: string}>[];
-const somethingHappenedArray = actionArray.filter(somethingHappened.match)
+// somethingHappenedArray has inferred type Action<{foo: string}>[]
+const somethingHappenedArray = actionArray.filter(somethingHappened.match);
 ```
 
 For more on using `Array.prototype.filter` as a type guard, see
