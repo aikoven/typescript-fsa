@@ -11,13 +11,13 @@ export interface Action<P> extends AnyAction {
   meta?: Meta;
 }
 
-export type Success<P, S> =
-  (P extends undefined ? { params?: P; } : { params: P; }) &
-  (S extends undefined ? { result?: S; } : { result: S; });
+export type Success<P, R> =
+  ({params: P} | (P extends void ? {params?: P} : never)) &
+  ({result: R} | (R extends void ? {result?: R} : never));
 
 export type Failure<P, E> =
-  (P extends undefined ? { params?: P; } : { params: P; }) &
-  (E extends undefined ? { error?: E; } : { error: E; });
+  ({params: P} | (P extends void ? {params?: P} : never)) &
+  {error: E};
 
 export function isType<P>(
   action: AnyAction,
@@ -29,31 +29,28 @@ export function isType<P>(
 export type ActionCreator<P> = {
   type: string;
   match: (action: AnyAction) => action is Action<P>;
-} & (
-  P extends undefined
-    ? (payload?: P, meta?: Meta) => Action<P>
-    : (payload: P, meta?: Meta) => Action<P>
-);
+  (payload: P, meta?: Meta): Action<P>;
+} & (P extends void ? {(payload?: P, meta?: Meta): Action<P>} : {});
 
-export interface AsyncActionCreators<P, S, E> {
+export interface AsyncActionCreators<P, R, E> {
   type: string;
   started: ActionCreator<P>;
-  done: ActionCreator<Success<P, S>>;
+  done: ActionCreator<Success<P, R>>;
   failed: ActionCreator<Failure<P, E>>;
 }
 
 export interface ActionCreatorFactory {
-  <P = undefined>(type: string, commonMeta?: Meta,
+  <P = void>(type: string, commonMeta?: Meta,
       isError?: boolean): ActionCreator<P>;
-  <P = undefined>(type: string, commonMeta?: Meta,
+  <P = void>(type: string, commonMeta?: Meta,
       isError?: (payload: P) => boolean): ActionCreator<P>;
 
-  async<P, S>(
+  async<P, R>(
     type: string, commonMeta?: Meta,
-  ): AsyncActionCreators<P, S, any>;
-  async<P, S, E>(
+  ): AsyncActionCreators<P, R, {}>;
+  async<P, R, E>(
     type: string, commonMeta?: Meta,
-  ): AsyncActionCreators<P, S, E>;
+  ): AsyncActionCreators<P, R, E>;
 }
 
 declare const process: {
