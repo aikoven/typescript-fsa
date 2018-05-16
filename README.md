@@ -41,7 +41,7 @@ console.log(action);  // {type: 'SOMETHING_HAPPENED', payload: {foo: 'bar'}}
 ### Async Action Creators
 
 Async Action Creators are objects with properties `started`, `done` and
-`failed` whose values are action creators.
+`failed` whose values are action creators. There is a number of [Companion Packages](#companion-packages) that help with binding Async Action Creators to async processes.
 
 ```ts
 import actionCreatorFactory from 'typescript-fsa';
@@ -138,8 +138,11 @@ export const reducer = (state: State, action: Action): State => {
 
   return state;
 };
+```
 
+#### redux-observable
 
+```ts
 // epic.ts
 import {Action} from 'redux';
 import {Observable} from 'rxjs';
@@ -162,7 +165,7 @@ export const epic = (actions$: Observable<Action>) =>
     });
 ```
 
-## Companion packages
+## Companion Packages
 
 * [typescript-fsa-redux-saga](https://github.com/aikoven/typescript-fsa-redux-saga)
 * [typescript-fsa-redux-observable](https://github.com/m0a/typescript-fsa-redux-observable)
@@ -184,7 +187,7 @@ Creates Action Creator factory with optional prefix for action types.
 * `defaultIsError?: Predicate`: Function that detects whether action is error
  given the payload. Default is `payload => payload instanceof Error`.
 
-### `ActionCreatorFactory<Payload>(type: string, commonMeta?: object, isError?: boolean): ActionCreator<Payload>`
+### `ActionCreatorFactory<Payload>#(type: string, commonMeta?: object, isError?: boolean): ActionCreator<Payload>`
 
 Creates Action Creator that produces actions with given `type` and payload of type `Payload`.
 
