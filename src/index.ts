@@ -4,12 +4,19 @@ export interface AnyAction {
 
 export type Meta = null | {[key: string]: any};
 
-export interface Action<Payload> extends AnyAction {
+export type SuccessAction<Payload> = {
   type: string;
   payload: Payload;
-  error?: boolean;
+  error?: false;
   meta?: Meta;
 }
+export type ErrorAction<Payload> = {
+  type: string;
+  payload: Payload;
+  error: true;
+  meta?: Meta;
+}
+export type Action<Payload> = SuccessAction<Payload> | ErrorAction<Payload>;
 
 /**
  * Returns `true` if action has the same type as action creator.
@@ -28,11 +35,23 @@ export interface Action<Payload> extends AnyAction {
 export function isType<Payload>(
   action: AnyAction,
   actionCreator: ActionCreator<Payload>,
-): action is Action<Payload> {
-  return action.type === actionCreator.type;
+): action is Action<Payload>
+export function isType<T extends Action<any>>(
+  action: AnyAction,
+  actionMatcher: ActionMatcher<T>,
+): action is T;
+export function isType<T extends Action<any>>(
+  action: AnyAction,
+  actionMatcher: ActionMatcher<T>,
+): action is T {
+  return actionMatcher.match(action);
 }
 
-export type ActionCreator<Payload> = {
+export interface ActionMatcher<T extends Action<any>> {
+  match(action: AnyAction): action is T;
+}
+
+export interface ActionCreator<Payload> extends ActionMatcher<Action<Payload>> {
   type: string;
   /**
    * Identical to `isType` except it is exposed as a bound method of an action
@@ -68,32 +87,24 @@ export type ActionCreator<Payload> = {
    * @param meta Action metadata. Merged with `commonMeta` of Action Creator.
    */
   (payload: Payload, meta?: Meta): Action<Payload>;
-} & (Payload extends void
-  ? {
-    /**
-     * Creates action with given payload and metadata.
-     *
-     * @param payload Action payload.
-     * @param meta Action metadata. Merged with `commonMeta` of Action Creator.
-     */
-    (payload?: Payload, meta?: Meta): Action<Payload>;
-  }
-  : {}
-);
+};
 
-export type Success<Params, Result> =
-  ({params: Params} | (Params extends void ? {params?: Params} : never)) &
-  ({result: Result} | (Result extends void ? {result?: Result} : never));
+export type Success<Params, Result> = {
+  params: Params;
+  result: Result;
+}
 
-export type Failure<Params, Error> =
-  ({params: Params} | (Params extends void ? {params?: Params} : never)) &
-  {error: Error};
+export type Failure<Params, Error> = {
+  params: Params;
+  error: Error;
+}
 
 export interface AsyncActionCreators<Params, Result, Error = {}> {
   type: string;
   started: ActionCreator<Params>;
   done: ActionCreator<Success<Params, Result>>;
   failed: ActionCreator<Failure<Params, Error>>;
+  finished: ActionMatcher<SuccessAction<Success<Params, Result>> | ErrorAction<Failure<Params, Error>>>
 }
 
 export interface ActionCreatorFactory {
@@ -174,10 +185,10 @@ export function actionCreatorFactory(
 
     return Object.assign(
       (payload: Payload, meta?: Meta) => {
-        const action: Action<Payload> = {
+        const action = {
           type: fullType,
           payload,
-        };
+        } as Action<Payload>;
 
         if (commonMeta || meta) {
           action.meta = Object.assign({}, commonMeta, meta);

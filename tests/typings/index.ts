@@ -260,6 +260,23 @@ function testIsType() {
     // typings:expect-error
     const foo: {} = action.payload;
   }
+
+  const async = actionCreator.async<void,
+                                    {foo: string},
+                                    {baz: string}>('ASYNC_NO_RESULT');
+
+  if (isType(action, async.finished)) {
+    // typings:expect-error
+    action.payload.result;
+    // typings:expect-error
+    action.payload.error;
+
+    if (action.error) {
+      action.payload.error.baz;
+    } else {
+      action.payload.result.foo;
+    }
+  }
 }
 
 function testMatch() {
