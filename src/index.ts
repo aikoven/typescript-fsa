@@ -70,13 +70,14 @@ export type ActionCreator<Payload> = {
   (payload: Payload, meta?: Meta): Action<Payload>;
 };
 
-export type Success<Params, Result> =
-  ({params: Params} | (Params extends void ? {params?: Params} : never)) &
+export type Success<Params, Result> = (
+  | {params: Params}
+  | (Params extends void ? {params?: Params} : never)) &
   ({result: Result} | (Result extends void ? {result?: Result} : never));
 
-export type Failure<Params, Error> =
-  ({params: Params} | (Params extends void ? {params?: Params} : never)) &
-  {error: Error};
+export type Failure<Params, Error> = (
+  | {params: Params}
+  | (Params extends void ? {params?: Params} : never)) & {error: Error};
 
 export interface AsyncActionCreators<Params, Result, Error = {}> {
   type: string;
@@ -95,7 +96,9 @@ export interface ActionCreatorFactory {
    * @param isError Defines whether created actions are error actions.
    */
   <Payload = void>(
-    type: string, commonMeta?: Meta, isError?: boolean,
+    type: string,
+    commonMeta?: Meta,
+    isError?: boolean,
   ): ActionCreator<Payload>;
   /**
    * Creates Action Creator that produces actions with given `type` and payload
@@ -107,7 +110,8 @@ export interface ActionCreatorFactory {
    *   payload.
    */
   <Payload = void>(
-    type: string, commonMeta?: Meta,
+    type: string,
+    commonMeta?: Meta,
     isError?: (payload: Payload) => boolean,
   ): ActionCreator<Payload>;
 
@@ -124,7 +128,8 @@ export interface ActionCreatorFactory {
    * @param commonMeta Metadata added to created actions.
    */
   async<Params, Result, Error = {}>(
-    type: string, commonMeta?: Meta,
+    type: string,
+    commonMeta?: Meta,
   ): AsyncActionCreators<Params, Result, Error>;
 }
 
@@ -146,10 +151,11 @@ export function actionCreatorFactory(
 ): ActionCreatorFactory {
   const actionTypes: {[type: string]: boolean} = {};
 
-  const base = prefix ? `${prefix}/` : "";
+  const base = prefix ? `${prefix}/` : '';
 
   function actionCreator<Payload>(
-    type: string, commonMeta?: Meta,
+    type: string,
+    commonMeta?: Meta,
     isError: ((payload: Payload) => boolean) | boolean = defaultIsError,
   ) {
     const fullType = base + type;
@@ -188,16 +194,21 @@ export function actionCreatorFactory(
   }
 
   function asyncActionCreators<Params, Result, Error>(
-    type: string, commonMeta?: Meta,
+    type: string,
+    commonMeta?: Meta,
   ): AsyncActionCreators<Params, Result, Error> {
     return {
       type: base + type,
       started: actionCreator<Params>(`${type}_STARTED`, commonMeta, false),
       done: actionCreator<Success<Params, Result>>(
-        `${type}_DONE`, commonMeta, false,
+        `${type}_DONE`,
+        commonMeta,
+        false,
       ),
       failed: actionCreator<Failure<Params, Error>>(
-        `${type}_FAILED`, commonMeta, true,
+        `${type}_FAILED`,
+        commonMeta,
+        true,
       ),
     };
   }
