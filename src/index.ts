@@ -68,18 +68,7 @@ export type ActionCreator<Payload> = {
    * @param meta Action metadata. Merged with `commonMeta` of Action Creator.
    */
   (payload: Payload, meta?: Meta): Action<Payload>;
-} & (Payload extends void
-  ? {
-    /**
-     * Creates action with given payload and metadata.
-     *
-     * @param payload Action payload.
-     * @param meta Action metadata. Merged with `commonMeta` of Action Creator.
-     */
-    (payload?: Payload, meta?: Meta): Action<Payload>;
-  }
-  : {}
-);
+};
 
 export type Success<Params, Result> =
   ({params: Params} | (Params extends void ? {params?: Params} : never)) &
