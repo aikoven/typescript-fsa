@@ -32,7 +32,7 @@ export function isType<Payload>(
   return action.type === actionCreator.type;
 }
 
-export type ActionCreator<Payload> = {
+export interface ActionCreator<Payload> {
   type: string;
   /**
    * Identical to `isType` except it is exposed as a bound method of an action
