@@ -68,7 +68,7 @@ export interface ActionCreator<Payload> {
    * @param meta Action metadata. Merged with `commonMeta` of Action Creator.
    */
   (payload: Payload, meta?: Meta): Action<Payload>;
-};
+}
 
 export type Success<Params, Result> = (
   | {params: Params}
