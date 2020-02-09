@@ -32,7 +32,7 @@
   "devDependencies": {
     "@alexlur/rollup-plugin-typescript": "^1.0.4",
     "@types/tape": "^4.2.28",
-    "rimraf": "^2.5.4",
+    "rimraf": "^3.0.2",
     "rollup": "^0.46.0",
     "rollup-plugin-execute": "^1.0.0",
     "rollup-plugin-replace": "^1.1.1",
