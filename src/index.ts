@@ -32,7 +32,7 @@ export function isType<Payload>(
   return action.type === actionCreator.type;
 }
 
-export interface ActionCreator<Payload> {
+interface ActionCreatorWithPayload<Payload> {
   type: string;
   /**
    * Identical to `isType` except it is exposed as a bound method of an action
@@ -70,14 +70,55 @@ export interface ActionCreator<Payload> {
   (payload: Payload, meta?: Meta): Action<Payload>;
 }
 
+interface ActionCreatorWithoutPayload<Payload> {
+  type: string;
+  /**
+   * Identical to `isType` except it is exposed as a bound method of an action
+   * creator. Since it is bound and takes a single argument it is ideal for
+   * passing to a filtering function like `Array.prototype.filter` or
+   * RxJS's `Observable.prototype.filter`.
+   *
+   * @example
+   *
+   *    const somethingHappened =
+   *      actionCreator<{foo: string}>('SOMETHING_HAPPENED');
+   *    const somethingElseHappened =
+   *      actionCreator<{bar: number}>('SOMETHING_ELSE_HAPPENED');
+   *
+   *    if (somethingHappened.match(action)) {
+   *      // action.payload has type {foo: string}
+   *    }
+   *
+   *    const actionArray = [
+   *      somethingHappened({foo: 'foo'}),
+   *      somethingElseHappened({bar: 5}),
+   *    ];
+   *
+   *    // somethingHappenedArray has inferred type Action<{foo: string}>[]
+   *    const somethingHappenedArray =
+   *      actionArray.filter(somethingHappened.match);
+   */
+  match: (action: AnyAction) => action is Action<Payload>;
+  /**
+   * Creates action without payload.
+   *
+   */
+  (): Action<Payload>;
+}
+
+export type ActionCreator<Payload> =
+  Payload extends void
+  ? ActionCreatorWithoutPayload<Payload> & ActionCreatorWithPayload<Payload>
+  : ActionCreatorWithPayload<Payload>;
+
 export type Success<Params, Result> = (
-  | {params: Params}
-  | (Params extends void ? {params?: Params} : never)) &
-  ({result: Result} | (Result extends void ? {result?: Result} : never));
+  (Params extends void ? {params?: Params} : {params: Params})) &
+  (Result extends void ? {result?: Result} : {result: Result});
 
 export type Failure<Params, Error> = (
-  | {params: Params}
-  | (Params extends void ? {params?: Params} : never)) & {error: Error};
+  (Params extends void
+    ? {params?: Params}
+    : {params: Params})) & {error: Error};
 
 export interface AsyncActionCreators<Params, Result, Error = {}> {
   type: string;

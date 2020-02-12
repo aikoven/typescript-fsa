@@ -9,6 +9,7 @@ const actionCreator = actionCreatorFactory();
 function testPayload() {
   const withPayload = actionCreator<{foo: string}>('WITH_PAYLOAD');
   const withoutPayload = actionCreator('WITHOUT_PAYLOAD');
+  const withOrWithoutPayload = actionCreator<string | undefined>('WITH_ORWITHOUT_PAYLOAD')
 
   // typings:expect-error
   const a = withPayload();
@@ -21,6 +22,11 @@ function testPayload() {
   const f = withoutPayload(undefined, {meta: 'meta'});
   // typings:expect-error
   const g = withoutPayload({foo: 'bar'});
+
+  const h = withOrWithoutPayload('string');
+  //const i = withOrWithoutPayload();
+  // typings:expect-error
+  const j = withOrWithoutPayload(111);
 }
 
 function testAsyncPayload() {
