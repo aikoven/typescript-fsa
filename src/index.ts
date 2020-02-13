@@ -4,12 +4,16 @@ export interface AnyAction {
 
 export type Meta = null | {[key: string]: any};
 
-export interface Action<Payload> extends AnyAction {
+export type Action<Payload> = Payload extends void ? {
+  type: string;
+  error?: boolean;
+  meta?: Meta;
+} : {
   type: string;
   payload: Payload;
   error?: boolean;
   meta?: Meta;
-}
+};
 
 /**
  * Returns `true` if action has the same type as action creator.
@@ -32,7 +36,7 @@ export function isType<Payload>(
   return action.type === actionCreator.type;
 }
 
-interface ActionCreatorWithPayload<Payload> {
+export interface ActionCreator<Payload> {
   type: string;
   /**
    * Identical to `isType` except it is exposed as a bound method of an action
@@ -67,58 +71,53 @@ interface ActionCreatorWithPayload<Payload> {
    * @param payload Action payload.
    * @param meta Action metadata. Merged with `commonMeta` of Action Creator.
    */
-  (payload: Payload, meta?: Meta): Action<Payload>;
+  (...a: (Payload extends void 
+          ? [] | [undefined] | [undefined, Meta]
+          : [Payload] | [Payload, Meta])): Action<Payload>;
 }
 
-interface ActionCreatorWithoutPayload<Payload> {
-  type: string;
-  /**
-   * Identical to `isType` except it is exposed as a bound method of an action
-   * creator. Since it is bound and takes a single argument it is ideal for
-   * passing to a filtering function like `Array.prototype.filter` or
-   * RxJS's `Observable.prototype.filter`.
-   *
-   * @example
-   *
-   *    const somethingHappened =
-   *      actionCreator<{foo: string}>('SOMETHING_HAPPENED');
-   *    const somethingElseHappened =
-   *      actionCreator<{bar: number}>('SOMETHING_ELSE_HAPPENED');
-   *
-   *    if (somethingHappened.match(action)) {
-   *      // action.payload has type {foo: string}
-   *    }
-   *
-   *    const actionArray = [
-   *      somethingHappened({foo: 'foo'}),
-   *      somethingElseHappened({bar: 5}),
-   *    ];
-   *
-   *    // somethingHappenedArray has inferred type Action<{foo: string}>[]
-   *    const somethingHappenedArray =
-   *      actionArray.filter(somethingHappened.match);
-   */
-  match: (action: AnyAction) => action is Action<Payload>;
-  /**
-   * Creates action without payload.
-   *
-   */
-  (): Action<Payload>;
-}
+type EmptyObject = {
+  [K in any] : never;
+};
 
-export type ActionCreator<Payload> =
-  Payload extends void
-  ? ActionCreatorWithoutPayload<Payload> & ActionCreatorWithPayload<Payload>
-  : ActionCreatorWithPayload<Payload>;
-
-export type Success<Params, Result> = (
-  (Params extends void ? {params?: Params} : {params: Params})) &
-  (Result extends void ? {result?: Result} : {result: Result});
+export type Success<Params, Result> =
+  Params extends void
+  ? (
+    Result extends void
+    ? EmptyObject
+    : {
+      result: Result;
+    }
+  )
+  : (
+    Result extends void ? {
+      params: Params;
+    }: {
+      params: Params;
+      result: Result;
+    }
+  )
+;
 
 export type Failure<Params, Error> = (
-  (Params extends void
-    ? {params?: Params}
-    : {params: Params})) & {error: Error};
+  Params extends void
+  ? (
+    Error extends void
+    ? EmptyObject
+    : {
+     error: Error;
+    }
+  )
+  : (
+    Error extends void
+    ? {
+      params: Params;
+    }: {
+      params: Params;
+      error: Error;
+    }
+  )
+);
 
 export interface AsyncActionCreators<Params, Result, Error = {}> {
   type: string;
@@ -197,7 +196,7 @@ export function actionCreatorFactory(
   function actionCreator<Payload>(
     type: string,
     commonMeta?: Meta,
-    isError: ((payload: Payload) => boolean) | boolean = defaultIsError,
+    isError: ((payload?: Payload) => boolean) | boolean = defaultIsError,
   ) {
     const fullType = base + type;
 
@@ -209,11 +208,11 @@ export function actionCreatorFactory(
     }
 
     return Object.assign(
-      (payload: Payload, meta?: Meta) => {
-        const action: Action<Payload> = {
+      (payload?: Payload, meta?: Meta) => {
+        const action = {
           type: fullType,
           payload,
-        };
+        } as Action<Payload>;
 
         if (commonMeta || meta) {
           action.meta = Object.assign({}, commonMeta, meta);
