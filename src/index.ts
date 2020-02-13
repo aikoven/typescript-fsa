@@ -71,9 +71,8 @@ export interface ActionCreator<Payload> {
    * @param payload Action payload.
    * @param meta Action metadata. Merged with `commonMeta` of Action Creator.
    */
-  (...a: (Payload extends void 
-          ? [] | [undefined] | [undefined, Meta]
-          : [Payload] | [Payload, Meta])): Action<Payload>;
+  (...a: (Payload extends void ? []: never)): Action<void>;
+  (params: Payload, meta?: Meta): Action<Payload>;
 }
 
 type EmptyObject = {
@@ -92,11 +91,11 @@ export type Success<Params, Result> =
   : (
     Result extends void ? {
       params: Params;
-    }: {
+    } : never)
+  | {
       params: Params;
       result: Result;
     }
-  )
 ;
 
 export type Failure<Params, Error> = (
@@ -112,11 +111,11 @@ export type Failure<Params, Error> = (
     Error extends void
     ? {
       params: Params;
-    }: {
+    }: never)
+  | {
       params: Params;
       error: Error;
     }
-  )
 );
 
 export interface AsyncActionCreators<Params, Result, Error = {}> {
