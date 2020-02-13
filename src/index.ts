@@ -4,12 +4,16 @@ export interface AnyAction {
 
 export type Meta = null | {[key: string]: any};
 
-export interface Action<Payload> extends AnyAction {
+export type Action<Payload> = Payload extends void ? {
+  type: string;
+  error?: boolean;
+  meta?: Meta;
+} : {
   type: string;
   payload: Payload;
   error?: boolean;
   meta?: Meta;
-}
+};
 
 /**
  * Returns `true` if action has the same type as action creator.
@@ -67,17 +71,52 @@ export interface ActionCreator<Payload> {
    * @param payload Action payload.
    * @param meta Action metadata. Merged with `commonMeta` of Action Creator.
    */
-  (payload: Payload, meta?: Meta): Action<Payload>;
+  (...a: (Payload extends void ? []: never)): Action<void>;
+  (params: Payload, meta?: Meta): Action<Payload>;
 }
 
-export type Success<Params, Result> = (
-  | {params: Params}
-  | (Params extends void ? {params?: Params} : never)) &
-  ({result: Result} | (Result extends void ? {result?: Result} : never));
+type EmptyObject = {
+  [K in any] : never;
+};
+
+export type Success<Params, Result> =
+  Params extends void
+  ? (
+    Result extends void
+    ? EmptyObject
+    : {
+      result: Result;
+    }
+  )
+  : (
+    Result extends void ? {
+      params: Params;
+    } : never)
+  | {
+      params: Params;
+      result: Result;
+    }
+;
 
 export type Failure<Params, Error> = (
-  | {params: Params}
-  | (Params extends void ? {params?: Params} : never)) & {error: Error};
+  Params extends void
+  ? (
+    Error extends void
+    ? EmptyObject
+    : {
+     error: Error;
+    }
+  )
+  : (
+    Error extends void
+    ? {
+      params: Params;
+    }: never)
+  | {
+      params: Params;
+      error: Error;
+    }
+);
 
 export interface AsyncActionCreators<Params, Result, Error = {}> {
   type: string;
@@ -156,7 +195,7 @@ export function actionCreatorFactory(
   function actionCreator<Payload>(
     type: string,
     commonMeta?: Meta,
-    isError: ((payload: Payload) => boolean) | boolean = defaultIsError,
+    isError: ((payload?: Payload) => boolean) | boolean = defaultIsError,
   ) {
     const fullType = base + type;
 
@@ -168,11 +207,11 @@ export function actionCreatorFactory(
     }
 
     return Object.assign(
-      (payload: Payload, meta?: Meta) => {
-        const action: Action<Payload> = {
+      (payload?: Payload, meta?: Meta) => {
+        const action = {
           type: fullType,
           payload,
-        };
+        } as Action<Payload>;
 
         if (commonMeta || meta) {
           action.meta = Object.assign({}, commonMeta, meta);

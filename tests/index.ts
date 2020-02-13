@@ -56,6 +56,8 @@ test('meta', assert => {
 
   const someAction = actionCreator('ACTION_TYPE');
 
+  const actionWithoutPayload = someAction();
+
   const action = someAction(undefined, {foo: 'bar'});
 
   assert.deepEqual(action.meta, {foo: 'bar'});
